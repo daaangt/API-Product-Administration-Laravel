@@ -21,8 +21,8 @@ PT: Esta é uma API Rest em Laravel, criada para registrar e consultar Produtos,
 
 <h2 align="center">Response Example</h2>
 <div style="display: inline_block;" align="center">
-    <p><img align="center" width="400" src="https://user-images.githubusercontent.com/59860240/132143619-9457bc5c-2adb-4d0f-8cb4-8ca940d23b2c.png"></p>
-    <p><img align="center" width="400" src="https://user-images.githubusercontent.com/59860240/132143752-742ec9b5-3cb9-424e-bbaa-36dbd6744fd1.png"></p>
+<img align="center" width="390px" height="280px" src="https://user-images.githubusercontent.com/59860240/132143619-9457bc5c-2adb-4d0f-8cb4-8ca940d23b2c.png">
+<img align="center" width="390px" height="280px" src="https://user-images.githubusercontent.com/59860240/132143752-742ec9b5-3cb9-424e-bbaa-36dbd6744fd1.png">
 </div>
 
 <h2 align="center">Authentication (Bearer Token Example)</h2>
