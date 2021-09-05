@@ -17,6 +17,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+// Route::get('/docs', function () {
+//     return view('vendor.l5-swagger.index');
+// });
+
 /* Authetication */
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -36,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
         'index', 'show'
     ]);
 
-    Route::apiResource('categories', ProductsController::class)->except([
+    Route::apiResource('categories', CategoriesController::class)->except([
         'index', 'show'
     ]);
 
