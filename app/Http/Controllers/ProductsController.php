@@ -11,9 +11,16 @@ use Illuminate\Http\Request;
 class ProductsController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *    path="/products",
+     *    summary="Display a list of products",
+     *    operationId="index",
+     *    tags={"Products"},*
+     *    @OA\Response(
+     *       response=200,
+     *       description="A list with all the products"
+     *    )
+     * )
      */
     public function index()
     {
@@ -21,10 +28,68 @@ class ProductsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *    path="/products/{id}",
+     *    summary="Display a specific products",
+     *    operationId="show",
+     *    tags={"Products"},
+     *    @OA\Response(
+     *       response=200,
+     *       description="Display a specific products"
+     *    )
+     * )
+     */
+    public function show($id)
+    {
+        return Product::find($id);
+    }
+
+    /**
+     * @OA\Post(
+     *    path="/products",
+     *    summary="Store a new product",
+     *    description="Store a product",
+     *    operationId="store",
+     *    tags={"Products"},
+     *    security={{ "bearerAuth": {} }},
+     *    @OA\RequestBody(
+     *       required=true,
+     *       @OA\MediaType(
+     *          mediaType="multipart/form-data",
+     *          @OA\Schema(
+     *          required={"name", "categories_id", "quantity", "price", "size", "composition", "file[]"},
+     *             @OA\Property(property="name", type="string", format="text", example="ProductName"),
+     *             @OA\Property(property="categories_id", type="number", example="1"),
+     *             @OA\Property(property="quantity", type="number", example="15"),
+     *             @OA\Property(property="price", type="double", format="double", example="15.50"),
+     *             @OA\Property(property="size", type="string", format="text", example="PP"),
+     *             @OA\Property(property="composition", type="string", format="text", example="CompositionInformations"),
+     *             @OA\Property(property="file[]", type="file", format="file[]", example="")
+     *          )
+     *       )
+     *    ),
+     *    @OA\Response(
+     *       response=201,
+     *       description="Product stored!",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="success", type="string", example="Product stored!")
+     *       )
+     *    ),
+     *    @OA\Response(
+     *       response=422,
+     *       description="Missing informations!",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="error", type="string", example="Missing informations!")
+     *       )
+     *    ),
+     *    @OA\Response(
+     *       response=401,
+     *       description="Unauthorized!",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="error", type="string", example="Unauthorized!")
+     *       )
+     *    )
+     * )
      */
     public function store(StoreProductRequest $request)
     {
@@ -54,22 +119,51 @@ class ProductsController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        return Product::find($id);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @OA\Put(
+     *    path="/products/{id}",
+     *    summary="Update an existing product",
+     *    description="Update a product",
+     *    operationId="update",
+     *    tags={"Products"},
+     *    security={{ "bearerAuth": {} }},
+     *    @OA\Parameter(
+     *       name="id",
+     *       in="path",
+     *       required=true,
+     *       @OA\Schema(
+     *          type="number"
+     *       )
+     *    ),
+     *    @OA\RequestBody(
+     *       required=true,
+     *       @OA\MediaType(
+     *          mediaType="multipart/form-data",
+     *          @OA\Schema(
+     *             @OA\Property(property="name", type="string", format="text", example="ProductName"),
+     *             @OA\Property(property="categories_id", type="number", example="1"),
+     *             @OA\Property(property="quantity", type="number", example="15"),
+     *             @OA\Property(property="price", type="double", format="double", example="15.50"),
+     *             @OA\Property(property="size", type="string", format="text", example="PP"),
+     *             @OA\Property(property="composition", type="string", format="text", example="CompositionInformations"),
+     *             @OA\Property(property="file[]", type="file", format="file[]", example="")
+     *          )
+     *       )
+     *    ),
+     *    @OA\Response(
+     *       response=201,
+     *       description="Product updated!",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="success", type="string", example="Product updated!")
+     *        )
+     *    ),
+     *    @OA\Response(
+     *       response=401,
+     *       description="Unauthorized!",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="error", type="string", example="Unauthorized!")
+     *       )
+     *    )
+     * )
      */
     public function update(UpdateProductRequest $request, $id)
     {
@@ -112,10 +206,36 @@ class ProductsController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @OA\DELETE(
+     *    path="/products/{id}",
+     *    summary="Delete an existing product",
+     *    description="Delete a product",
+     *    operationId="delete",
+     *    tags={"Products"},
+     *    security={{ "bearerAuth": {} }},
+     *    @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *    ),
+     *    @OA\Response(
+     *       response=200,
+     *       description="product deleted!",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="success", type="string", example="product deleted!")
+     *       )
+     *    ),
+     *    @OA\Response(
+     *       response=401,
+     *       description="Unauthorized!",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="error", type="string", example="Unauthorized!")
+     *       )
+     *    )
+     * )
      */
     public function destroy($id)
     {

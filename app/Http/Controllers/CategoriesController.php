@@ -7,13 +7,19 @@ use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-
 class CategoriesController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *   path="/categories",
+     *   summary="Display a list of categories",
+     *   operationId="indexCategory",
+     *   tags={"Categories"},*
+     *   @OA\Response(
+     *     response=200,
+     *     description="A list with all the categories"
+     *   )
+     * )
      */
     public function index()
     {
@@ -21,10 +27,71 @@ class CategoriesController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *   path="/categories/{id}",
+     *   summary="Display a specific category",
+     *   operationId="showCategory",
+     *   tags={"Categories"},
+     *   @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *         type="number"
+     *      )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Display a specific category"
+     *   )
+     * )
+     */
+    public function show($id)
+    {
+        return Category::find($id);
+    }
+
+    /**
+     * @OA\Post(
+     *    path="/categories",
+     *    summary="Store a new category",
+     *    description="Store a category",
+     *    operationId="storeCategory",
+     *    tags={"Categories"},
+     *    security={{ "bearerAuth": {} }},
+     *    @OA\RequestBody(
+     *       required=true,
+     *       @OA\MediaType(
+     *          mediaType="multipart/form-data",
+     *          @OA\Schema(
+     *             required={"name", "file"},
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="file", type="file", format="file"),
+     *          )
+     *       )
+     *    ),
+     *    @OA\Response(
+     *       response=201,
+     *       description="Category stored!",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="success", type="string", example="Category stored!")
+     *       )
+     *    ),
+     *    @OA\Response(
+     *       response=422,
+     *       description="Missing informations!",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="error", type="string", example="Missing informations!")
+     *       )
+     *    ),
+     *    @OA\Response(
+     *       response=401,
+     *       description="Unauthorized!",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="error", type="string", example="Unauthorized!")
+     *       )
+     *    ),
+     * )
      */
     public function store(StoreCategoryRequest $request)
     {
@@ -48,22 +115,53 @@ class CategoriesController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        return Category::find($id);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @OA\PUT(
+     *    path="/categories/{id}",
+     *    summary="Update an existing category",
+     *    description="Update a category",
+     *    operationId="updateCategory",
+     *    tags={"Categories"},
+     *    security={{ "bearerAuth": {} }},
+     *    @OA\Parameter(
+     *       name="id",
+     *       in="path",
+     *       required=true,
+     *       @OA\Schema(
+     *          type="number"
+     *       )
+     *    ),
+     *    @OA\RequestBody(
+     *       required=true,
+     *       @OA\MediaType(
+     *          mediaType="multipart/form-data",
+     *          @OA\Schema(
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="file", type="file", format="file"),
+     *          )
+     *       )
+     *    ),
+     *    @OA\Response(
+     *       response=200,
+     *       description="Category updated!",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="success", type="string", example="Category updated!")
+     *       )
+     *    ),
+     *    @OA\Response(
+     *       response=422,
+     *       description="Category updated!",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="error", type="string", example="Missing informations!")
+     *       )
+     *    ),
+     *    @OA\Response(
+     *       response=401,
+     *       description="Unauthorized!",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="error", type="string", example="Unauthorized!")
+     *       )
+     *    )
+     * )
      */
     public function update(UpdateCategoryRequest $request, $id)
     {
@@ -94,10 +192,36 @@ class CategoriesController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @OA\DELETE(
+     *    path="/categories/{id}",
+     *    summary="Delete an existing category",
+     *    description="Delete a category",
+     *    operationId="deleteCategory",
+     *    tags={"Categories"},
+     *    security={{ "bearerAuth": {} }},
+     *    @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="number"
+     *         )
+     *    ),
+     *    @OA\Response(
+     *       response=200,
+     *       description="Category deleted!",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="success", type="string", example="Category deleted!")
+     *       )
+     *    ),
+     *    @OA\Response(
+     *       response=401,
+     *       description="Unauthorized!",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="error", type="string", example="Unauthorized!")
+     *       )
+     *    ),
+     * )
      */
     public function destroy($id)
     {
