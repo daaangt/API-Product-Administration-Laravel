@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ProductsController;
 use Illuminate\Http\Request;
@@ -16,15 +17,28 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::prefix('products')->group(function () {
-//     Route::get('/', [ProductsController::class, 'index']);
-// });
+/* Authetication */
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
-Route::apiResource('products', ProductsController::class);
-Route::apiResource('categories', CategoriesController::class);
+/* Unauthenticated Routes */
+Route::apiResource('products', ProductsController::class)->only([
+    'index', 'show'
+]);
 
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+Route::apiResource('categories', CategoriesController::class)->only([
+    'index', 'show'
+]);
+
+/* Authenticated routes */
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('products', ProductsController::class)->except([
+        'index', 'show'
+    ]);
+
+    Route::apiResource('categories', ProductsController::class)->except([
+        'index', 'show'
+    ]);
+
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
